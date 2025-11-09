@@ -1,0 +1,10 @@
+.DS_Store
+.idea
+node_modules
+.env
+.tanstack
+!jest.config.js
+*.d.ts
+.cdk.staging
+cdk.out
+

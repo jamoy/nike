@@ -1,0 +1,33 @@
+{
+  "name": "@osome/framework",
+  "version": "4.0.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "ts-node": "./src/*.ts",
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.js"
+    }
+  },
+  "bin": {
+    "osomedev": "./bin/dev"
+  },
+  "scripts": {
+    "dev": "osomedev",
+    "test": "vitest",
+    "build": "tsc"
+  },
+  "packageManager": "pnpm@10.20.0",
+  "dependencies": {
+    "@hono/sentry": "^1.2.2",
+    "@hono/swagger-ui": "^0.5.2",
+    "@hono/zod-validator": "^0.7.4",
+    "hono": "^4.10.4",
+    "hono-openapi": "^1.1.1",
+    "undici": "^7.16.0",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "@osome/workspace-crm",
+  "version": "4.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "ts-node src/dev.ts",
+    "test": "vitest"
+  },
+  "packageManager": "pnpm@10.20.0",
+  "dependencies": {
+    "@osome/framework": "workspace:*"
+  }
+}
