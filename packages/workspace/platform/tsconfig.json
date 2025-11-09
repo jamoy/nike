@@ -28,7 +28,10 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
     "paths": {
-      "@osome/framework": ["./node_modules/@osome/framework/src/index.ts"]
+      "@osome/*": ["./node_modules/@osome/*/src/index.ts"]
     }
+  },
+  "ts-node": {
+    "esm": true
   }
 }

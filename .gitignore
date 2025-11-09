@@ -2,9 +2,6 @@
 .idea
 node_modules
 .env
-.tanstack
-!jest.config.js
+.next
 *.d.ts
-.cdk.staging
-cdk.out
-
+dist

@@ -3,12 +3,13 @@
   "version": "4.0.0",
   "type": "module",
   "scripts": {
-    "dev": "ts-node src/dev.ts",
+    "dev": "ts-node-esm src/dev.ts",
     "test": "vitest"
   },
   "packageManager": "pnpm@10.20.0",
   "dependencies": {
     "@osome/framework": "workspace:*",
-    "@osome/workspace-crm": "workspace:*"
+    "@osome/workspace-crm": "workspace:*",
+    "glob": "^11.0.3"
   }
 }

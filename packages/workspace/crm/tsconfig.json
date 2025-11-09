@@ -11,8 +11,8 @@
       "node"
     ],
     "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
+    "declaration": false,
+    "declarationMap": false,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
     "noImplicitReturns": true,
@@ -26,7 +26,10 @@
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "@osome/framework": ["./node_modules/@osome/framework/src/index.ts"]
+    }
   },
   "ts-node": {
     "esm": true
