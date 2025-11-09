@@ -22,8 +22,6 @@ app.use(secureHeaders())
 // }))
 
 export function Route(route: string, handler: Handler) {
-    console.log(1);
-    console.log(route.split(' ').at(1)!)
     app.get(route.split(' ').at(1)!, handler)
     return { test: 1, route, handler };
 }
