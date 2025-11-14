@@ -5,3 +5,6 @@ node_modules
 .next
 *.d.ts
 dist
+
+# sst
+.sst

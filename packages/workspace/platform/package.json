@@ -3,7 +3,7 @@
   "version": "4.0.0",
   "type": "module",
   "scripts": {
-    "dev": "ts-node-esm src/dev.ts",
+    "dev": "nodemon -e ts,js,mjs,json --exec 'pnpm exec osome dev'",
     "test": "vitest"
   },
   "packageManager": "pnpm@10.20.0",

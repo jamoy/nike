@@ -11,8 +11,8 @@
       "node"
     ],
     "sourceMap": true,
-    "declaration": false,
-    "declarationMap": false,
+    "declaration": true,
+    "declarationMap": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
     "noImplicitReturns": true,
@@ -26,13 +26,7 @@
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
-    "skipLibCheck": true,
-    "allowImportingTsExtensions": true,
-    "rewriteRelativeImportExtensions": true,
-    "paths": {
-      "@osome/*": ["./node_modules/@osome/*/src/index.ts"],
-      "@osome/*/*": ["./node_modules/@osome/*/src/*.ts"]
-    }
+    "skipLibCheck": true
   },
   "ts-node": {
     "esm": true
