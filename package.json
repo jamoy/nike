@@ -4,7 +4,8 @@
   "type": "module",
   "packageManager": "pnpm@10.20.0",
   "scripts": {
-    "dev": "pnpm -r dev"
+    "dev": "pnpm -r dev",
+    "postinstall": "sst build"
   },
   "devDependencies": {
     "@types/node": "^24.10.0",

@@ -5,6 +5,7 @@ node_modules
 .next
 *.d.ts
 dist
+.turbo
 
 # sst
 .sst

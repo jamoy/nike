@@ -9,7 +9,6 @@
   "packageManager": "pnpm@10.20.0",
   "dependencies": {
     "@osome/framework": "workspace:*",
-    "@osome/workspace-crm": "workspace:*",
-    "glob": "^11.0.3"
+    "@osome/workspace-crm": "workspace:*"
   }
 }

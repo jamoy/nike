@@ -13,6 +13,7 @@
     "osome": "bin/osome"
   },
   "scripts": {
+    "dev": "tsc --watch",
     "test": "vitest",
     "build": "tsc"
   },

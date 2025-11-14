@@ -1,0 +1,44 @@
+name: Auto update PRs when main changes
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: auto-update-prs
+  cancel-in-progress: false
+
+jobs:
+  update-prs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            const prs = await github.paginate(
+              github.rest.pulls.list,
+              { owner, repo, state: "open", base: "main", per_page: 100 }
+            );
+
+            for (const pr of prs) {
+              // Skip forks that disallow maintainer edits
+              if (pr.head.repo?.fork && !pr.maintainer_can_modify) {
+                core.info(`Skip #${pr.number} fork without maintainer edits`);
+                continue;
+              }
+              try {
+                await github.rest.pulls.updateBranch({ owner, repo, pull_number: pr.number });
+                core.info(`Updated #${pr.number} ${pr.head.label}`);
+              } catch (error) {
+                // 422 typically means merge conflict or already up-to-date
+                core.info(`Skip #${pr.number}: ${error.message}`);
+              }
+            }
