@@ -1,53 +1,160 @@
 # GitHub Actions Workflows
 
-## Auto Release to GitHub Packages
+## Release Workflow (Changesets)
 
-This workflow automatically publishes packages to GitHub Packages when changes are merged to the `main` branch.
+This repository uses [Changesets](https://github.com/changesets/changesets) for managing package versions and publishing to GitHub Packages.
 
 ### How It Works
 
-1. **Trigger**: Activates on pushes to `main` branch that affect files in:
-   - `packages/**`
-   - `tooling/**`
-   - `sdk/**`
+1. **Developer makes changes** to a package
+2. **Developer creates a changeset** describing the change
+3. **Changesets bot creates/updates a "Version Packages" PR** automatically
+4. **When the PR is merged**, packages are built, versioned, and published to GitHub Packages
 
-2. **Package Detection**: Automatically detects which packages changed in the commit
+### Developer Workflow
 
-3. **Version Bumping**: Bumps the patch version (e.g., `1.0.0` → `1.0.1`)
+#### 1. Make Your Changes
 
-4. **Build**: Runs the package's build script (if it exists)
+```bash
+# Make changes to any package
+cd packages/framework/framework
+# ... edit files ...
+```
 
-5. **Publish**: Publishes to GitHub Packages (npm registry)
+#### 2. Create a Changeset
 
-6. **Tagging**: Creates a git tag and GitHub release
+After making your changes, create a changeset:
 
-### Package Requirements
+```bash
+pnpm changeset
+```
 
-For a package to be automatically released, it must:
+This will prompt you for:
+- **Which packages changed?** (select from list)
+- **What type of change?** (major/minor/patch)
+- **Summary of changes** (for changelog)
 
-1. **Have a scoped name** in `package.json`:
-   ```json
-   {
-     "name": "@osome/package-name"
-   }
-   ```
+**Example:**
+```bash
+$ pnpm changeset
 
-2. **Be in a workspace directory** (`packages/`, `tooling/`, or `sdk/`)
+🦋  Which packages would you like to include?
+✔ @osome/framework
 
-3. **Have a valid version** in `package.json`:
-   ```json
-   {
-     "version": "1.0.0"
-   }
-   ```
+🦋  Which packages should have a major bump?
+   (Breaking changes)
+◯ @osome/framework
 
-### Version Bumping Strategy
+🦋  Which packages should have a minor bump?
+   (New features, backwards compatible)
+◉ @osome/framework
 
-Currently, the workflow bumps the **patch** version automatically. To customize:
+🦋  Which packages should have a patch bump?
+   (Bug fixes)
+◯ @osome/framework
 
-- **Patch** (default): Bug fixes and minor changes (`1.0.0` → `1.0.1`)
-- **Minor**: New features (`1.0.0` → `1.1.0`) - Add `[minor]` to commit message
-- **Major**: Breaking changes (`1.0.0` → `2.0.0`) - Add `[major]` to commit message
+🦋  Please enter a summary for this change:
+✔ Add new authentication middleware
+
+🦋  Summary
+│
+│  @osome/framework: minor
+│
+│  Add new authentication middleware
+│
+└──────────────────────────────────
+
+✔ Is this your desired changeset? (Y/n) · true
+```
+
+This creates a file in `.changeset/` with a random name.
+
+#### 3. Commit the Changeset
+
+```bash
+git add .changeset/
+git commit -m "feat: add authentication middleware"
+git push
+```
+
+#### 4. Create Pull Request
+
+Create a PR with your changes + the changeset file.
+
+#### 5. Merge to Main
+
+When your PR is merged to `main`:
+1. The **Release workflow** runs
+2. A **"Version Packages" PR** is created/updated automatically
+3. This PR includes:
+   - Updated `package.json` versions
+   - Updated `CHANGELOG.md` files
+   - All pending changesets consumed
+
+#### 6. Release the Package
+
+When the "Version Packages" PR is merged:
+1. Packages are **built** (via `pnpm build`)
+2. Versions are **tagged** in git
+3. Packages are **published** to GitHub Packages
+4. **GitHub Releases** are created
+
+### Version Bump Types
+
+Choose the appropriate version bump based on [Semantic Versioning](https://semver.org/):
+
+| Type | When to Use | Example |
+|------|-------------|---------|
+| **Patch** | Bug fixes, internal refactoring | `1.0.0` → `1.0.1` |
+| **Minor** | New features (backwards compatible) | `1.0.0` → `1.1.0` |
+| **Major** | Breaking changes | `1.0.0` → `2.0.0` |
+
+### Common Commands
+
+```bash
+# Create a changeset
+pnpm changeset
+
+# Create an empty changeset (for non-package changes)
+pnpm changeset --empty
+
+# Check what will be released
+pnpm changeset status
+
+# Preview what version updates will happen
+pnpm changeset version --dry-run
+
+# Build all packages (locally)
+pnpm build
+```
+
+### Multiple Package Changes
+
+If you change multiple packages in one PR, create changesets for each:
+
+```bash
+# Make changes to multiple packages
+cd packages/framework/framework
+# ... make changes ...
+
+cd ../migrations
+# ... make changes ...
+
+# Create changesets for both
+pnpm changeset  # Select @osome/framework
+pnpm changeset  # Select @osome/framework-migrations
+
+# Commit all changesets
+git add .changeset/
+git commit -m "feat: add migration support"
+```
+
+### Skip Release for Non-Package Changes
+
+For documentation, config, or other changes that don't affect packages:
+
+- **Don't create a changeset** - just commit and push normally
+- The workflow won't create a release PR if there are no changesets
 
 ### Installing Published Packages
 
@@ -61,92 +168,129 @@ Create a Personal Access Token (PAT) with `read:packages` scope:
 
 #### 2. Configure npm/pnpm
 
-Add to your `.npmrc` (or use the root `.npmrc`):
+The `.npmrc` file is already configured:
 ```
 @osome:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN
 ```
 
-Or use environment variable:
+Add authentication via environment variable:
 ```bash
 export GITHUB_TOKEN=your_token_here
 ```
 
-#### 3. Install the package
+Or add to `.npmrc` (don't commit this!):
+```
+//npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN
+```
+
+#### 3. Install Packages
 
 ```bash
-pnpm add @osome/package-name
-# or
-npm install @osome/package-name
+pnpm add @osome/framework@latest
+# or specific version
+pnpm add @osome/framework@1.2.3
 ```
 
-### Workflow Outputs
+### Workflow Configuration
 
-- **Git Tag**: `@osome/package-name@1.0.1`
-- **GitHub Release**: Created with installation instructions
-- **Published Package**: Available at `https://github.com/orgs/YOUR_ORG/packages`
+The release workflow (`.github/workflows/release.yml`) does the following:
 
-### Customization
+1. **Checks for changesets** on every push to `main`
+2. **Creates/Updates "Version Packages" PR** if changesets exist
+3. **Publishes packages** when the PR is merged
+4. **Creates GitHub Releases** for each published package
 
-#### Change Version Bump Type
+### Package Requirements
 
-Modify the workflow file (`.github/workflows/auto-release.yml`):
+For a package to be publishable:
 
-```yaml
-- name: Bump version (patch)
-  run: |
-    # Change 'patch' to 'minor' or 'major'
-    npm version patch -m "chore(release): %s [skip ci]" --no-git-tag-version
-```
+1. **Scoped name** in `package.json`:
+   ```json
+   {
+     "name": "@osome/package-name"
+   }
+   ```
 
-#### Add Pre-publish Checks
+2. **Valid version**:
+   ```json
+   {
+     "version": "1.0.0"
+   }
+   ```
 
-Add steps before the publish step:
+3. **Build script** (if needed):
+   ```json
+   {
+     "scripts": {
+       "build": "tsc"
+     }
+   }
+   ```
 
-```yaml
-- name: Run tests
-  working-directory: ${{ matrix.package }}
-  run: pnpm test
-
-- name: Run linting
-  working-directory: ${{ matrix.package }}
-  run: pnpm lint
-```
-
-#### Skip Release for Specific Commits
-
-Add `[skip ci]` to your commit message:
-```bash
-git commit -m "docs: update README [skip ci]"
-```
+4. **PublishConfig** (optional, auto-added by workflow):
+   ```json
+   {
+     "publishConfig": {
+       "registry": "https://npm.pkg.github.com/",
+       "access": "restricted"
+     }
+   }
+   ```
 
 ### Troubleshooting
+
+#### No "Version Packages" PR Created
+
+- **Check**: Did you create and commit a changeset?
+- **Fix**: Run `pnpm changeset` and commit the file
+
+#### PR exists but not updating
+
+- **Check**: Did you push to `main`?
+- **Fix**: Merge your PR with the changeset to `main`
 
 #### Package not publishing
 
 1. **Check package name**: Must be scoped (`@osome/...`)
-2. **Check permissions**: Workflow needs `packages: write` permission
-3. **Check registry**: Ensure `.npmrc` points to GitHub Packages
+2. **Check build script**: Must succeed
+3. **Check permissions**: Workflow needs `packages: write` permission
 
-#### Version conflicts
+#### Changesets showing wrong packages
 
-If a version already exists, the workflow will fail. To fix:
-1. Manually bump the version in `package.json`
-2. Commit and push to main
+- **Check**: Your workspace is configured correctly in `pnpm-workspace.yaml`
+- **Fix**: Ensure all packages are listed in workspace config
 
-#### Authentication issues
+### Advanced: Linked Packages
 
-Ensure your Personal Access Token has:
-- `read:packages` (for installing)
-- `write:packages` (for publishing - handled by `GITHUB_TOKEN` in actions)
+If packages should always be versioned together, add to `.changeset/config.json`:
+
+```json
+{
+  "linked": [
+    ["@osome/framework", "@osome/framework-migrations"]
+  ]
+}
+```
+
+### Advanced: Fixed Versioning
+
+To keep packages at the same version (like Babel):
+
+```json
+{
+  "fixed": [
+    ["@osome/workspace-platform", "@osome/workspace-crm"]
+  ]
+}
+```
 
 ### Example Package.json
 
 ```json
 {
-  "name": "@osome/my-package",
+  "name": "@osome/framework",
   "version": "1.0.0",
-  "description": "My awesome package",
+  "description": "Framework package",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -160,15 +304,28 @@ Ensure your Personal Access Token has:
 }
 ```
 
-### Security Notes
+### Resources
 
-- The workflow uses `GITHUB_TOKEN` which is automatically provided by GitHub Actions
-- Published packages are **private by default** (`access: restricted`)
-- To make a package public, change `access: "public"` in the workflow
+- [Changesets Documentation](https://github.com/changesets/changesets)
+- [Semantic Versioning](https://semver.org/)
+- [GitHub Packages Documentation](https://docs.github.com/en/packages)
 
-### Monitoring Releases
+---
 
-View releases at:
-- **Actions**: `https://github.com/YOUR_ORG/YOUR_REPO/actions`
-- **Packages**: `https://github.com/orgs/YOUR_ORG/packages`
-- **Releases**: `https://github.com/YOUR_ORG/YOUR_REPO/releases`
+## Quick Reference
+
+```bash
+# 1. Make changes to packages
+# 2. Create changeset
+pnpm changeset
+
+# 3. Commit and push
+git add .
+git commit -m "feat: your change"
+git push
+
+# 4. Create PR and merge to main
+# 5. Wait for "Version Packages" PR to be created
+# 6. Merge "Version Packages" PR
+# 7. Packages are automatically published! 🎉
+```
