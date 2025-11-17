@@ -1,0 +1,19 @@
+{
+  "name": "@osome/nextsome",
+  "version": "4.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon -e ts,js,mjs,json --exec 'pnpm exec osome dev'",
+    "test": "vitest"
+  },
+  "packageManager": "pnpm@10.20.0",
+  "dependencies": {
+    "@osome/framework": "workspace:*",
+    "@casl/ability": "^6.7.3",
+    "@openauthjs/openauth": "^0.4.3",
+    "jose": "^6.1.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}

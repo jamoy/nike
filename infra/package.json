@@ -1,0 +1,19 @@
+{
+  "name": "@osome-internal/infra",
+  "version": "0.1.0",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "cdk": "cdk"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "2.215.0",
+    "constructs": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.7.9",
+    "aws-cdk": "2.1031.2",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.6.3"
+  }
+}

@@ -1,6 +1,6 @@
-db, vpc, kms, sqs, should all be defined here
+db, vpc, kms, sqs, should all be defined as cdk
 
-sst imports them separately
+sst imports them separately as 
 
 this file is supposed to be all in 1 iac to stand up an environment
 

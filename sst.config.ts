@@ -3,13 +3,14 @@
 export default $config({
   app(input) {
     return {
-      name: "osome-nike-platform",
-      removal: input?.stage === "production" ? "retain" : "remove",
-      protect: ["production"].includes(input?.stage),
-      home: "aws",
-    };
+      name: 'osome-nike-workspace',
+      removal: input?.stage === 'production' ? 'retain' : 'remove',
+      protect: ['production'].includes(input?.stage),
+      home: 'aws',
+    }
   },
   async run() {
     // load all sst.configs inside
+    // get all manifests and create subscriptions based on reflection
   },
-});
+})

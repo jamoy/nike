@@ -1,0 +1,8 @@
+{
+  "name": "@osome/sdk",
+  "version": "1.0.0",
+  "packageManager": "pnpm@10.20.0",
+  "dependencies": {
+    "zod": "^4.1.12"
+  }
+}
