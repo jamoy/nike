@@ -6,6 +6,8 @@ import { requestId } from 'hono/request-id'
 import { contextStorage } from 'hono/context-storage'
 import { timing } from 'hono/timing'
 import { handle } from 'hono/aws-lambda'
+import { describeRoute, openAPIRouteHandler } from 'hono-openapi'
+import { zValidator } from '@hono/zod-validator'
 // import * as Sentry from '@sentry/aws-serverless';
 export { z } from 'zod'
 // import {Resource} from "sst";
@@ -35,11 +37,47 @@ export const MiddlewareGroup = {
 MiddlewareGroup.Default = () => {
 }
 
-export function RegisterRoute(route: any) {
+app.get(
+  '/openapi',
+  openAPIRouteHandler(app, {
+    documentation: {
+      info: {
+        title: 'Workspace API',
+        version: '1.0.0',
+        description: 'OSOME Workspace API',
+      },
+      servers: [
+        { url: 'http://localhost:8787', description: 'Local Server' },
+      ],
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+    },
+  }),
+)
+
+export function RegisterRoute(route: any, config: any) {
   console.log('Registering route:', route._route)
   const [method, path] = route._route.split(' ')
-  console.log(route)
-  app[method.toLowerCase()](path, route._fn)
+  app[method.toLowerCase()](path,
+    describeRoute({
+      tags: ['test'],
+      responses: {
+        200: {
+          description: 'Successful response',
+          content: {
+            'application/json': {
+            },
+          },
+        },
+      },
+    }),
+    // zValidator('query', route._spec),
+    route._fn,
+  )
+  // write to the openapi spec
 }
 
 export async function Dev() {

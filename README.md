@@ -20,3 +20,6 @@ goals
 4. create the deployment path with sst
 5. create spa deployment path
 6. create authentication path
+
+
+uses the frappe model
