@@ -1,5 +1,5 @@
 {
-  "name": "osome-nike",
+  "name": "osome",
   "version": "4.0.0",
   "type": "module",
   "packageManager": "pnpm@10.20.0",
@@ -16,6 +16,7 @@
     "eslint": "^9.39.1",
     "globals": "^16.5.0",
     "knip": "^5.69.1",
+    "nodemon": "^3.1.11",
     "sst": "^3.17.23",
     "ts-node": "^10.9.2",
     "turbo": "^2.6.1",

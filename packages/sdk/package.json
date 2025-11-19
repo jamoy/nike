@@ -1,0 +1,11 @@
+{
+  "name": "@osome/sdk",
+  "version": "1.0.0",
+  "packageManager": "pnpm@10.20.0",
+  "scripts": {
+    "dev": "nodemon --exec 'ts-node collector/collector.ts'"
+  },
+  "dependencies": {
+    "zod": "^4.1.12"
+  }
+}

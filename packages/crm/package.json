@@ -1,0 +1,21 @@
+{
+  "name": "@osome/crm",
+  "version": "4.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "ts-node src/dev.ts",
+    "test": "vitest"
+  },
+  "exports": {
+    ".": {
+      "ts-node": "./src/*.ts",
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.js"
+    }
+  },
+  "packageManager": "pnpm@10.20.0",
+  "dependencies": {
+    "@osome/framework": "workspace:*",
+    "hono": "^4.10.4"
+  }
+}

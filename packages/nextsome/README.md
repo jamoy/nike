@@ -1,2 +1,2 @@
 this repository has the baseline endpoints and
-functionality
+functionality much like how core works

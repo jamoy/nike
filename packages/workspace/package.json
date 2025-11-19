@@ -1,0 +1,15 @@
+{
+  "name": "@osome/workspace",
+  "version": "4.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon -e ts,js,mjs,json --exec 'ts-node-esm node_modules/@osome/framework/src/dev.ts'",
+    "test": "vitest"
+  },
+  "packageManager": "pnpm@10.20.0",
+  "dependencies": {
+    "@osome/framework": "workspace:*",
+    "@osome/crm": "workspace:*",
+    "zod": "^4.1.12"
+  }
+}
