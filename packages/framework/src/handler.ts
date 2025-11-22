@@ -1,9 +1,13 @@
 // https://github.com/OsomePteLtd/server-toolkit/blob/main/src/app/app.ts
-import type { HonoRequest } from 'hono'
-import { z } from 'zod'
+import type {HonoRequest} from 'hono'
+import {z} from 'zod'
 import jsonSchemaToZod from 'json-schema-to-zod'
+import {describeRoute} from "hono-openapi";
+import {SDK} from '@osome/sdk';
 
 export class Handler {
+  handler: any;
+
   private _versions: ((context: any) => Promise<void> | undefined)[] = []
   private _route: string = ''
   private _middleware: ((context: any) => Promise<void>) | undefined
@@ -33,12 +37,44 @@ export class Handler {
     this._route = route
   }
 
+  static RegisterRoute(app, route: any, config: any) {
+    console.log('Registering route:', route._route)
+    const [method, path] = route._route.split(' ')
+    app[method.toLowerCase()](path,
+      describeRoute({
+        tags: ['test'],
+        responses: {
+          200: {
+            description: 'Successful response',
+            content: {
+              'application/json': {},
+            },
+          },
+        },
+      }),
+      // zValidator('query', route._spec),
+      route._fn,
+    )
+    // write to the openapi spec
+  }
+
   // called when the handler is fully configured
   async then(resolve: () => void) {
+    // if this is in lambda, then we start the server here
     console.log(1)
     // await this._fn(this._route)
     // await this._fn(this._middleware)
     console.log(this._type, this._label)
+
+    // we are in AWS Lambda
+    if (process.env['AWS_EXECUTION_ENV'] === 'AWS_Lambda_nodejs22.x') {
+      await SDK.Initialize();
+      const {Hono} = await import('hono')
+      const {handle} = await import('hono/aws-lambda')
+      const app = new Hono()
+      Handler.RegisterRoute(app, this)
+      this.handler = handle(app);
+    }
     resolve()
   }
 
@@ -130,7 +166,7 @@ export class Handler {
 
   // validate the params header using jsonschema
   ValidateHttpParamsRequest(validator: any) {
-    this._spec = jsonSchemaToZod(validator, { module: 'esm' })
+    this._spec = jsonSchemaToZod(validator, {module: 'esm'})
     return this
   }
 

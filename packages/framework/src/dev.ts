@@ -1,4 +1,4 @@
-import { Dev, RegisterRoute } from './index.ts'
+import { Dev, GetApp, Handler } from './index.ts'
 
 import * as path from 'node:path'
 
@@ -15,10 +15,12 @@ if (typeof devModule.default === 'function' || devModule.constructor.name === 'A
 
 const manifest = await import(path.join(process.cwd(), './src/manifest.ts'))
 
+const app = GetApp();
+
 Object.keys(manifest).forEach(async (key) => {
   const mod = manifest[key]
   if (mod && typeof mod === 'object' && 'default' in mod) {
-    RegisterRoute(mod.default, config)
+    Handler.RegisterRoute(app, mod.default, config)
   }
 })
 

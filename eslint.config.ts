@@ -2,7 +2,6 @@ import js from '@eslint/js'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
 import json from '@eslint/json'
-import stylistic from '@stylistic/eslint-plugin'
 import { defineConfig, globalIgnores } from 'eslint/config'
 import sonarjs from 'eslint-plugin-sonarjs';
 import eslintComments from 'eslint-plugin-eslint-comments';
@@ -17,7 +16,6 @@ export default defineConfig([
     extends: ['js/recommended'],
     languageOptions: { globals: globals.node },
   },
-  stylistic.configs.recommended,
   tseslint.configs.recommended,
   {
     plugins: {

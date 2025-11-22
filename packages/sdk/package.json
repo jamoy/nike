@@ -1,11 +1,23 @@
 {
   "name": "@osome/sdk",
   "version": "1.0.0",
+  "type": "module",
   "packageManager": "pnpm@10.20.0",
-  "scripts": {
-    "dev": "nodemon --exec 'ts-node collector/collector.ts'"
+  "exports": {
+    ".": {
+      "ts-node": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
   },
-  "dependencies": {
+  "scripts": {
+    "dev": "nodemon --exec 'ts-node scripts/collector.ts'",
+    "build": "ts-node-esm scripts/codegen.ts"
+  },
+  "devDependencies": {
+    "openapi-typescript": "^7.10.1",
+    "typescript": "^5.9.3",
+    "glob": "^11.1.0",
     "zod": "^4.1.12"
   }
 }

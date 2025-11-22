@@ -37,6 +37,8 @@ export const MiddlewareGroup = {
 MiddlewareGroup.Default = () => {
 }
 
+export const GetApp = () => app;
+
 app.get(
   '/openapi',
   openAPIRouteHandler(app, {
@@ -57,28 +59,6 @@ app.get(
     },
   }),
 )
-
-export function RegisterRoute(route: any, config: any) {
-  console.log('Registering route:', route._route)
-  const [method, path] = route._route.split(' ')
-  app[method.toLowerCase()](path,
-    describeRoute({
-      tags: ['test'],
-      responses: {
-        200: {
-          description: 'Successful response',
-          content: {
-            'application/json': {
-            },
-          },
-        },
-      },
-    }),
-    // zValidator('query', route._spec),
-    route._fn,
-  )
-  // write to the openapi spec
-}
 
 export async function Dev() {
   if (!process.env['AWS_EXECUTION_ENV']) {
